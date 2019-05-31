@@ -57,18 +57,6 @@ public class CategoryResources {
         return Response.ok().build();
     }
 
-    @DELETE
-    @Path("/{categoryId}")
-    public Response deleteCat(@PathParam("categoryId") int categoryId) {
-        Category result = em.createNamedQuery("category.id", Category.class)
-                .setParameter("categoryId", categoryId)
-                .getSingleResult();
-        if (result == null) {
-            return Response.status(404).build();
-        }
-        em.remove(result);
-        return Response.ok().build();
-    }
 /*******************************************************************************/
     @GET
     @Path("/{categoryId}/products")
