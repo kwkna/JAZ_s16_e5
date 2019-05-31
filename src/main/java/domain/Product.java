@@ -2,6 +2,9 @@ package domain;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import java.util.ArrayList;
+import java.util.List;
 
 @XmlRootElement
 @Entity
@@ -11,6 +14,7 @@ import javax.xml.bind.annotation.XmlRootElement;
         @NamedQuery(name = "category.product.id", query = "SELECT p FROM Product p JOIN Category c ON c.id=p.category.id WHERE p.id=:productId AND p.category.id=:categoryId"),
         @NamedQuery(name = "product.findByPrice", query = "SELECT p FROM Product p WHERE p.price BETWEEN :priceFrom AND :priceTo"),
         @NamedQuery(name = "product.findByName", query = "SELECT p FROM Product p WHERE p.title=:name")
+
 })
 public class Product {
 
@@ -22,6 +26,7 @@ public class Product {
     private float price;
     @ManyToOne
     private Category category;
+    private List<Comment> comments = new ArrayList<>();
 
 
     public int getId() {
@@ -62,5 +67,22 @@ public class Product {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    @XmlTransient
+    @OneToMany(mappedBy = "product", orphanRemoval = true, cascade = CascadeType.PERSIST)
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+    public Comment getCommentById(int commentId) {
+        for (Comment c : comments) {
+            if (c.getId() == commentId)
+                return c;
+        }
+        return null;
     }
 }

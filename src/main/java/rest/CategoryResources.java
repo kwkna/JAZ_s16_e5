@@ -1,6 +1,7 @@
 package rest;
 
 import domain.Category;
+import domain.Comment;
 import domain.Product;
 
 import javax.ejb.Stateless;
@@ -56,8 +57,8 @@ public class CategoryResources {
         em.persist(result);
         return Response.ok().build();
     }
+    /*******************************************************************************/
 
-/*******************************************************************************/
     @GET
     @Path("/{categoryId}/products")
     @Produces(MediaType.APPLICATION_JSON)
@@ -115,5 +116,61 @@ public class CategoryResources {
         em.persist(result);
         return Response.ok().build();
     }
+    /*******************************************************************************/
 
+    @POST
+    @Path("/{categoryId}/products/{productId}/comments")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response addComment(@PathParam("productId") int productId, Comment comment) {
+        Product result = em.createNamedQuery("product.id", Product.class)
+                .setParameter("productId", productId)
+                .getSingleResult();
+        if (result == null)
+            return Response.status(404).build();
+
+        result.getComments().add(comment);
+        comment.setProduct(result);
+        em.persist(comment);
+        return Response.ok().build();
+    }
+
+
+    @GET
+    @Path("/{categoryId}/products/{productId}/comments")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Comment> getComments(@PathParam("categoryId") int categoryId,
+                                     @PathParam("productId") int productId) {
+        Product result = em.createNamedQuery("product.id", Product.class)
+                .setParameter("productId", productId)
+                .getSingleResult();
+        return result.getComments();
+    }
+
+    @GET
+    @Path("/{categoryId}/products/{productId}/comments/{commentId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getComment(@PathParam("productId") int productId,
+                               @PathParam("commentId") int commentId) {
+        Product result = em.createNamedQuery("product.id", Product.class)
+                .setParameter("productId", productId)
+                .getSingleResult();
+        if (result.getCommentById(commentId)==null)
+            return Response.status(404).build();
+        return Response.ok(result.getCommentById(commentId)).build();
+    }
+    @DELETE
+    @Path("/{categoryId}/products/{productId}/comments/{commentId}")
+    public Response deleteComment(@PathParam("productId") int productId,
+                               @PathParam("commentId") int commentId) {
+        Product result = em.createNamedQuery("product.id", Product.class)
+                .setParameter("productId", productId)
+                .getSingleResult();
+        if (result.getCommentById(commentId)==null)
+            return Response.status(404).build();
+        //em.getTransaction().begin();
+        //em.remove(result.getCommentById(commentId));
+        //result.getComments().remove(commentId);
+        //em.getTransaction().commit();
+        return Response.ok().build();
+    }
 }
