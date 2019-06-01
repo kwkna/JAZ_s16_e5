@@ -167,10 +167,8 @@ public class CategoryResources {
                 .getSingleResult();
         if (result.getCommentById(commentId)==null)
             return Response.status(404).build();
-        //em.getTransaction().begin();
-        //em.remove(result.getCommentById(commentId));
-        //result.getComments().remove(commentId);
-        //em.getTransaction().commit();
+        Comment comment = result.getCommentById(commentId);
+        result.removeComment(comment);
         return Response.ok().build();
     }
 }

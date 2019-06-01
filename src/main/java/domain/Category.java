@@ -18,6 +18,7 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String name;
+    @OneToMany(mappedBy = "category")
     private List<Product> products = new ArrayList<>();
 
     public int getId() {
@@ -35,8 +36,9 @@ public class Category {
     public void setName(String name) {
         this.name = name;
     }
+
+    //@OneToMany(mappedBy = "category")
     @XmlTransient
-    @OneToMany(mappedBy = "category")
     public List<Product> getProducts() {
         return products;
     }

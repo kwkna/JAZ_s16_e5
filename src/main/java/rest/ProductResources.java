@@ -18,10 +18,10 @@ public class ProductResources {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Product> getAllProducts(@QueryParam("from") int priceFrom,
-                                        @QueryParam("to") int priceTo,
-                                        @QueryParam("name") String name) {
-        if (name!=null){
+    public List<Product> getAllProducts(@QueryParam("from") int priceFrom,//metoda ktora pod adresem /products zwraca wszystkie porodukty
+                                        @QueryParam("to") int priceTo,//te wszystkie @QueryParam to są parametry w adresie np./products?name=ASUS
+                                        @QueryParam("name") String name) {//lub /products?from=1&to=1000
+        if (name!=null){//jezeli w adresie jest parametr name to if jest true
             return em.createNamedQuery("product.findByName", Product.class)
                     .setParameter("name", name)
                     .getResultList();

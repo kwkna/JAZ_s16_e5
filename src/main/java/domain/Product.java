@@ -14,7 +14,6 @@ import java.util.List;
         @NamedQuery(name = "category.product.id", query = "SELECT p FROM Product p JOIN Category c ON c.id=p.category.id WHERE p.id=:productId AND p.category.id=:categoryId"),
         @NamedQuery(name = "product.findByPrice", query = "SELECT p FROM Product p WHERE p.price BETWEEN :priceFrom AND :priceTo"),
         @NamedQuery(name = "product.findByName", query = "SELECT p FROM Product p WHERE p.title=:name")
-
 })
 public class Product {
 
@@ -26,6 +25,8 @@ public class Product {
     private float price;
     @ManyToOne
     private Category category;
+
+    @OneToMany(mappedBy = "product", orphanRemoval = true, cascade = CascadeType.PERSIST)
     private List<Comment> comments = new ArrayList<>();
 
 
@@ -70,7 +71,6 @@ public class Product {
     }
 
     @XmlTransient
-    @OneToMany(mappedBy = "product", orphanRemoval = true, cascade = CascadeType.PERSIST)
     public List<Comment> getComments() {
         return comments;
     }
@@ -84,5 +84,11 @@ public class Product {
                 return c;
         }
         return null;
+    }
+    public void removeComment(Comment comment) {
+        comments.remove(comment);
+        if (comment != null) {
+            comment.setProduct(null);
+        }
     }
 }
