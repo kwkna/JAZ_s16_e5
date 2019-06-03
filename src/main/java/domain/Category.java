@@ -37,7 +37,6 @@ public class Category {
         this.name = name;
     }
 
-    //@OneToMany(mappedBy = "category")
     @XmlTransient
     public List<Product> getProducts() {
         return products;
